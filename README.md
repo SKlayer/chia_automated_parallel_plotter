@@ -17,12 +17,16 @@ plotting process. Based on these times it is possible to set up an automated end
 
 ![Delay Times between Plots](delay_diagram.png "Delay between Plots")
 
+## Description of the automated endless plotting process
 The program starts first e.g. 6 plots parallel and after phase 1 of these plots is finished, it starts an other 6 parallel
 plots. Each plot is executed in its own thread. After the first plots are finished the threads will be closed and an
 other 6 plots were triggered and so on.
 
-For this you can use the following params
-
+## Preliminary
+* Install Python 3.8
+* Setup Chia environment variable
+* Evaluate the times of your plotting process
+* Start CAPP with the following params
 
 |Parameter |Description |Example |
 | --- | --- | --- |
