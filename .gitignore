@@ -2,5 +2,5 @@ venv
 log
 .idea
 idea
-misc
-/misc/
+private
+/private/
