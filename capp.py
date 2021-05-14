@@ -26,32 +26,36 @@ def farm_chia():
     try:
         args = parser.parse_args()
         plot_size = 32
+        ram_size = 3390
+        queue_size = 1
+        cores = 2
+
         if args.plot:
             plot_size = args.plot
+        if args.ram:
+            ram_size = args.ram
+        if args.queued:
+            queue_size = args.queued
+        if args.cores:
+            cores = args.cores
+
         temp = args.temporary.split(";")
         tar = args.target.split(";")
 
         for i in range(0,int(args.amount)):
             command = 'chia plots create' \
                       + ' -k ' + plot_size \
-                      + ' -n ' + args.queued \
-                      + ' -b ' + args.ram \
-                      + ' -r ' + args.cores \
-                      + ' -t ' + temp[i % len(temp)] \
-                      + ' -d ' + tar[i % len(tar)]
-            command = 'chia plots create' \
-                      + ' -k ' + plot_size \
-                      + ' -n ' + args.queued \
-                      + ' -b ' + args.ram \
-                      + ' -r ' + args.cores \
+                      + ' -n ' + queue_size \
+                      + ' -b ' + ram_size \
+                      + ' -r ' + cores \
                       + ' -t ' + temp[i % len(temp)] +":\\" \
                       + ' -d ' + tar[i % len(tar)] +":\\"
             thread = threading.Thread(target=os.system, args=(command,))
             thread_list.append(thread)
-            logger.stdout_logger.debug('[Chia Farmer] ['+str(datetime.now()) + ']' +' Plot ' + str(i) + ' created.')
+            logger.stdout_logger.debug('[CAPP] ['+str(datetime.now()) + ']' +' Plot ' + str(i) + ' created.')
         return thread_list
     except:
-        logger.stdout_logger.error('[Chia Farmer] ['+str(datetime.now()) + ']' +' Failed.')
+        logger.stdout_logger.error('[CAPP] ['+str(datetime.now()) + ']' +' Failed.')
         print(traceback.format_exc())
 
 if __name__ == '__main__':

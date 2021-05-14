@@ -1,3 +1,5 @@
+#Chai Automated Parallel Plotter - CAPP
+
 This project was initiated by Chia Farming via CLI.
 
 The python program should improve the handling with the CLI and automate the plotting process.
@@ -21,19 +23,18 @@ other 6 plots were triggered and so on.
 
 For this you can use the following params
 
-| --- | --- | --- |
+
 |Parameter |Description |Example |
 | --- | --- | --- |
 |k |Plotsize |-k 32 (default: 32) |
-|n |Amount of plots in queue |-n 1 |
-|b |Amount of RAM in MB |-n 3390 |
-|r |Amount of Threads |-r 2 |
+|n |Amount of plots in queue |-n 1 (default: 1) |
+|b |Amount of RAM in MB |-n 3390 (default: 3390) |
+|r |Amount of Threads |-r 2 (default: 2) |
 |t |Temporary devices separated with ; |-t A;B |
 |f |Final target devices separated with ; |-f C |
 |d1 |Delay 1 which corresponds with the Phase 1 time in seconds |-d1 12500 |
 |d2 |Delay 2 which corresponds with Plotting time in seconds|-d2 32000 |
 |a |Amount of parallel plots |-a 6 |
-| --- | --- | --- |
 
 The program can be started via
 ```
