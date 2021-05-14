@@ -15,9 +15,10 @@ The use case was that I'd like to plot automated on a small server system with m
 to determine the times of the different plotting phases. It is needed find the time of phase 1 and the time of the whole
 plotting process. Based on these times it is possible to set up an automated endless plotting process with optimal output.
 
+## Description of the automated endless plotting process
+
 ![Delay Times between Plots](delay_diagram.png "Delay between Plots")
 
-## Description of the automated endless plotting process
 The program starts first e.g. 6 plots parallel and after phase 1 of these plots is finished, it starts an other 6 parallel
 plots. Each plot is executed in its own thread. After the first plots are finished the threads will be closed and an
 other 6 plots were triggered and so on.
