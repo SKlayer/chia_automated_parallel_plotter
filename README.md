@@ -1,4 +1,4 @@
-# Chai Automated Parallel Plotter - CAPP
+# Chia Automated Parallel Plotter - CAPP
 
 This project was initiated by Chia Farming via CLI.
 
