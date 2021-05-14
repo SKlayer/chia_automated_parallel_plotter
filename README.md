@@ -1,4 +1,4 @@
-#Chai Automated Parallel Plotter - CAPP
+# Chai Automated Parallel Plotter - CAPP
 
 This project was initiated by Chia Farming via CLI.
 
@@ -38,5 +38,5 @@ For this you can use the following params
 
 The program can be started via
 ```
-    python chai_automated_parallel_plotter.py -k 32 -n 1 -b 3390 -r 2 -t Y;Z -f V -d1 12500 -d2 32000 -a 6
+    python capp.py -k 32 -n 1 -b 3390 -r 2 -t Y;Z -f V -d1 12500 -d2 32000 -a 6
 ```
