@@ -27,7 +27,13 @@ other 6 plots were triggered and so on.
 * Install Python 3.8
 * Setup Chia environment variable
 * Evaluate the times of your plotting process
-* Start CAPP with the following params
+* Start CAPP
+
+```
+    python capp.py -k 32 -n 1 -b 3390 -r 2 -t Y;Z -f V -d1 12500 -d2 32000 -a 6
+```
+
+## Parameters
 
 |Parameter |Description |Example |
 | --- | --- | --- |
@@ -40,8 +46,3 @@ other 6 plots were triggered and so on.
 |d1 |Delay 1 which corresponds with the Phase 1 time in seconds |-d1 12500 |
 |d2 |Delay 2 which corresponds with Plotting time in seconds|-d2 32000 |
 |a |Amount of parallel plots |-a 6 |
-
-The program can be started via
-```
-    python capp.py -k 32 -n 1 -b 3390 -r 2 -t Y;Z -f V -d1 12500 -d2 32000 -a 6
-```
