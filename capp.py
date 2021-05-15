@@ -69,11 +69,11 @@ if __name__ == '__main__':
 
     copytime = 4000
     if args.copytime:
-        copytime = args.copytime
+        copytime = int(args.copytime)
 
     distance = 900
     if args.distance:
-        distance = args.distance
+        distance = int(args.distance)
 
     while True:
         while True:
