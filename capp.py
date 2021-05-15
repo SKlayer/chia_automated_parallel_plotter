@@ -12,6 +12,8 @@ logger = LoggerFactory()
 parser = argparse.ArgumentParser(description="This module will create chia plots as defined via params")
 parser.add_argument("-d1", "--delay1", type=str, required=False, help="Delay of the first phase")
 parser.add_argument("-d2", "--delay2", type=str, required=False, help="To start new plotting")
+parser.add_argument("-c", "--copytime", type=str, required=False, help="Time to copy files from temporary to destination")
+parser.add_argument("-d", "--distance", type=str, required=False, help="Time between each plot starts")
 parser.add_argument("-a", "--amount", type=str, required=False, help="Amount of plots Parallel")
 parser.add_argument("-r", "--cores", type=str, required=False, help="Cores per plot")
 parser.add_argument("-b", "--ram", type=str, required=False, help="Ram per Plot")
@@ -29,6 +31,7 @@ def farm_chia():
         ram_size = 3390
         queue_size = 1
         cores = 2
+
 
         if args.plot:
             plot_size = args.plot
@@ -63,6 +66,15 @@ if __name__ == '__main__':
     start = datetime.timestamp(datetime.now())
     threads = []
     count = 0
+
+    copytime = 4000
+    if args.copytime:
+        copytime = args.copytime
+
+    distance = 900
+    if args.distance:
+        distance = args.distance
+
     while True:
         while True:
             count += 1
@@ -70,17 +82,20 @@ if __name__ == '__main__':
             threads.append(thread_list)
             for thread in thread_list:
                 thread.start()
+                time.sleep(distance)
 
             if count == 2:
                 break
 
-            time.sleep(int(args.delay1))
+            time.sleep(int(args.delay1) - (len(thread_list) * distance))
 
             if count == 1 and len(threads) > 1:
                 for thread in threads[0]:
                     thread.join()
 
         time.sleep(int(args.delay2) - (datetime.timestamp(datetime.now()) - start))
+        time.sleep(copytime)
+
         for thread in threads[0]:
             thread.join()
         threads.pop(0)

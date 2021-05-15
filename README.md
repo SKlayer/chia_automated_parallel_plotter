@@ -30,10 +30,12 @@ other 6 plots were triggered and so on.
 * Start CAPP
 
 ```
-    python capp.py -k 32 -n 1 -b 3390 -r 2 -t Y;Z -f V -d1 12500 -d2 32000 -a 6
+    python capp.py -k 32 -n 1 -b 3390 -r 2 -t Y;Z -f V -d1 12500 -d2 34000 -d 900 -c 4000 -a 6
 ```
 
 ## Parameters
+
+![Description of the delay parameters](delay_parameters.png "Description of the delay parameters")
 
 |Parameter |Description |Example |
 | --- | --- | --- |
@@ -44,5 +46,7 @@ other 6 plots were triggered and so on.
 |t |Temporary devices separated with ; |-t A;B |
 |f |Final target devices separated with ; |-f C |
 |d1 |Delay 1 which corresponds with the Phase 1 time in seconds |-d1 12500 |
-|d2 |Delay 2 which corresponds with Plotting time in seconds|-d2 32000 |
+|d2 |Delay 2 which corresponds with Plotting time in seconds |-d2 32000 |
+|c |Copytime is the time which is needed to copy 1 plot from temporary device to target device |-c 4000 (default: 4000) |
+|d |Distance is the time between each plot starts |-d 900 (default: 2000) |
 |a |Amount of parallel plots |-a 6 |
