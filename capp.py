@@ -11,20 +11,19 @@ from concurrent.futures import ThreadPoolExecutor
 logger = LoggerFactory()
 
 parser = argparse.ArgumentParser(description="This module will create chia plots as defined via params")
-parser.add_argument("-d1", "--delay1", type=str, required=False, help="Delay of the first phase")
-parser.add_argument("-d2", "--delay2", type=str, required=False, help="To start new plotting")
-parser.add_argument("-c", "--copytime", type=str, required=False, help="Time to copy files from temporary to destination")
+parser.add_argument("-d1", "--delay1", type=str, required=True, help="Delay of the first phase")
+parser.add_argument("-d2", "--delay2", type=str, required=True, help="To start new plotting")
 parser.add_argument("-d", "--distance", type=str, required=False, help="Time between each plot starts")
-parser.add_argument("-a", "--amount", type=str, required=False, help="Amount of plots Parallel")
-parser.add_argument("-r", "--cores", type=str, required=False, help="Cores per plot")
-parser.add_argument("-b", "--ram", type=str, required=False, help="Ram per Plot")
-parser.add_argument("-n", "--queued", type=str, required=False, help="Queued Plots")
+parser.add_argument("-a", "--amount", type=str, required=True, help="Amount of plots Parallel")
+parser.add_argument("-r", "--cores", type=str, required=False, help="Cores per plot (default: 2)")
+parser.add_argument("-b", "--ram", type=str, required=False, help="Ram per Plot (default: 3390)")
+parser.add_argument("-n", "--queued", type=str, required=False, help="Queued Plots (default: 1)")
 parser.add_argument("-k", "--plot", type=str, required=False, help="Plot (default: 32)")
-parser.add_argument("-t", "--temporary", type=str, required=False, help="Temporary Devices")
-parser.add_argument("-f", "--target", type=str, required=False, help="Target Device ")
+parser.add_argument("-t", "--temporary", type=str, required=True, help="Temporary Devices")
+parser.add_argument("-f", "--target", type=str, required=True, help="Target Device")
 parser.add_argument("-m", "--remote", type=bool, required=False, help="Remote Machine")
-parser.add_argument("-farmerkey", "--farmerkey", type=str, required=False, help="Farmer Key")
-parser.add_argument("-poolkey", "--poolkey", type=str, required=False, help="Pool Key")
+parser.add_argument("-fk", "--farmerkey", type=str, required=False, help="Farmer Key")
+parser.add_argument("-pk", "--poolkey", type=str, required=False, help="Pool Key")
 
 
 args = parser.parse_args()
@@ -56,8 +55,8 @@ def create_chia_threads():
                             + ' -n ' + queue_size \
                             + ' -b ' + ram_size \
                             + ' -r ' + cores \
-                            + ' -t ' + temp[i % len(temp)] +":\\" \
-                            + ' -d ' + tar[i % len(tar)] +":\\"
+                            + ' -t ' + temp[i % len(temp)] \
+                            + ' -d ' + tar[i % len(tar)] 
             if args.remote:
                 command = 'chia plots create' \
                             + ' -f ' + args.farmerkey \
@@ -66,8 +65,8 @@ def create_chia_threads():
                             + ' -n ' + queue_size \
                             + ' -b ' + ram_size \
                             + ' -r ' + cores \
-                            + ' -t ' + temp[i % len(temp)] +":\\" \
-                            + ' -d ' + tar[i % len(tar)] +":\\"
+                            + ' -t ' + temp[i % len(temp)] \
+                            + ' -d ' + tar[i % len(tar)] 
             thread = threading.Thread(target=os.system, args=(command,))
             thread_list.append(thread)
             logger.stdout_logger.debug('[CAPP] ['+str(datetime.now()) + ']' +' Plot ' + str(i) + ' created.')
