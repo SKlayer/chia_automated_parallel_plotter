@@ -6,6 +6,7 @@ import time
 from logger import LoggerFactory
 from subprocess import Popen
 import threading
+from concurrent.futures import ThreadPoolExecutor
 
 logger = LoggerFactory()
 
@@ -22,16 +23,16 @@ parser.add_argument("-k", "--plot", type=str, required=False, help="Plot (defaul
 parser.add_argument("-t", "--temporary", type=str, required=False, help="Temporary Devices")
 parser.add_argument("-f", "--target", type=str, required=False, help="Target Device ")
 
+args = parser.parse_args()
 
-def farm_chia():
-    thread_list = []
+def create_chia_threads():
     try:
-        args = parser.parse_args()
         plot_size = 32
         ram_size = 3390
         queue_size = 1
         cores = 2
 
+        thread_list = []
 
         if args.plot:
             plot_size = args.plot
@@ -44,15 +45,15 @@ def farm_chia():
 
         temp = args.temporary.split(";")
         tar = args.target.split(";")
-
+        
         for i in range(0,int(args.amount)):
             command = 'chia plots create' \
-                      + ' -k ' + plot_size \
-                      + ' -n ' + queue_size \
-                      + ' -b ' + ram_size \
-                      + ' -r ' + cores \
-                      + ' -t ' + temp[i % len(temp)] +":\\" \
-                      + ' -d ' + tar[i % len(tar)] +":\\"
+                        + ' -k ' + plot_size \
+                        + ' -n ' + queue_size \
+                        + ' -b ' + ram_size \
+                        + ' -r ' + cores \
+                        + ' -t ' + temp[i % len(temp)] +":\\" \
+                        + ' -d ' + tar[i % len(tar)] +":\\"
             thread = threading.Thread(target=os.system, args=(command,))
             thread_list.append(thread)
             logger.stdout_logger.debug('[CAPP] ['+str(datetime.now()) + ']' +' Plot ' + str(i) + ' created.')
@@ -61,43 +62,50 @@ def farm_chia():
         logger.stdout_logger.error('[CAPP] ['+str(datetime.now()) + ']' +' Failed.')
         print(traceback.format_exc())
 
-if __name__ == '__main__':
-    args = parser.parse_args()
+def start_chia_threads(distance):
+    thread_list = create_chia_threads()
+    for thread in thread_list:
+        thread.start()
+        time.sleep(distance)
+    return thread_list
+
+def check_aliveness(threads):
+    for thread in threads:
+        while thread.isAlive():
+            time.sleep(120)
+        thread.join()
+
+def start_chia_automate_modus():
     start = datetime.timestamp(datetime.now())
     threads = []
     count = 0
 
-    copytime = 4000
-    if args.copytime:
-        copytime = int(args.copytime)
-
     distance = 900
+
     if args.distance:
         distance = int(args.distance)
 
     while True:
-        while True:
-            count += 1
-            thread_list = farm_chia()
-            threads.append(thread_list)
-            for thread in thread_list:
-                thread.start()
-                time.sleep(distance)
+        count += 1
+        threads.append(start_chia_threads(distance))
+        
+        if count == len(args.temporary.split(";")):
+            break
 
-            if count == 2:
-                break
+        time.sleep(int(args.delay1) - (len(threads[0]) * distance))
 
-            time.sleep(int(args.delay1) - (len(thread_list) * distance))
+        if count == 1 and len(threads) > 1:
+            check_aliveness(threads[0])
+            threads.pop(0)
 
-            if count == 1 and len(threads) > 1:
-                for thread in threads[0]:
-                    thread.join()
+    time.sleep(int(args.delay2) - (datetime.timestamp(datetime.now()) - start))
 
-        time.sleep(int(args.delay2) - (datetime.timestamp(datetime.now()) - start))
-        time.sleep(copytime)
+    check_aliveness(threads[0])
+    threads.pop(0)
 
-        for thread in threads[0]:
-            thread.join()
-        threads.pop(0)
-        start = datetime.timestamp(datetime.now())
-        count = 0
+    start = datetime.timestamp(datetime.now())
+    count = 0
+
+if __name__ == '__main__':
+    while True:
+        start_chia_automate_modus()
