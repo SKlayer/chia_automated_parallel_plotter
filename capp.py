@@ -51,20 +51,20 @@ def create_chia_threads():
         
         for i in range(0,int(args.amount)):
             command = 'chia plots create' \
-                            + ' -k ' + plot_size \
-                            + ' -n ' + queue_size \
-                            + ' -b ' + ram_size \
-                            + ' -r ' + cores \
+                            + ' -k ' + str(plot_size) \
+                            + ' -n ' + str(queue_size) \
+                            + ' -b ' + str(ram_size) \
+                            + ' -r ' + str(cores) \
                             + ' -t ' + temp[i % len(temp)] \
                             + ' -d ' + tar[i % len(tar)] 
             if args.remote:
                 command = 'chia plots create' \
                             + ' -f ' + args.farmerkey \
                             + ' -p ' + args.poolkey \
-                            + ' -k ' + plot_size \
-                            + ' -n ' + queue_size \
-                            + ' -b ' + ram_size \
-                            + ' -r ' + cores \
+                            + ' -k ' + str(plot_size) \
+                            + ' -n ' + str(queue_size) \
+                            + ' -b ' + str(ram_size) \
+                            + ' -r ' + str(cores) \
                             + ' -t ' + temp[i % len(temp)] \
                             + ' -d ' + tar[i % len(tar)] 
             thread = threading.Thread(target=os.system, args=(command,))
