@@ -79,33 +79,32 @@ def start_chia_automate_modus():
     start = datetime.timestamp(datetime.now())
     threads = []
     count = 0
-
     distance = 900
 
     if args.distance:
         distance = int(args.distance)
-
-    while True:
-        count += 1
-        threads.append(start_chia_threads(distance))
         
-        if count == len(args.temporary.split(";")):
-            break
+    while True:
+        while True:
+            count += 1
+            threads.append(start_chia_threads(distance))
+            
+            if count == len(args.temporary.split(";")):
+                break
 
-        time.sleep(int(args.delay1) - (len(threads[0]) * distance))
+            time.sleep(int(args.delay1) - (len(threads[0]) * distance))
 
-        if count == 1 and len(threads) > 1:
-            check_aliveness(threads[0])
-            threads.pop(0)
+            if count == 1 and len(threads) > 1:
+                check_aliveness(threads[0])
+                threads.pop(0)
 
-    time.sleep(int(args.delay2) - (datetime.timestamp(datetime.now()) - start))
+        time.sleep(int(args.delay2) - (datetime.timestamp(datetime.now()) - start))
 
-    check_aliveness(threads[0])
-    threads.pop(0)
+        check_aliveness(threads[0])
+        threads.pop(0)
 
-    start = datetime.timestamp(datetime.now())
-    count = 0
+        start = datetime.timestamp(datetime.now())
+        count = 0
 
 if __name__ == '__main__':
-    while True:
-        start_chia_automate_modus()
+    start_chia_automate_modus()
