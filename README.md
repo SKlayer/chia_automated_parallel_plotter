@@ -30,7 +30,7 @@ other 6 plots were triggered and so on.
 * Start CAPP
 
 ```
-    python capp.py -k 32 -n 1 -b 3390 -r 2 -t Y;Z -f V -d1 12500 -d2 34000 -d 900 -c 4000 -a 6
+    python capp.py -k 32 -n 1 -b 3390 -r 2 -t Y;Z -f V -d1 12500 -d2 34000 -d 900 -a 6
 ```
 
 ## Parameters
@@ -47,6 +47,8 @@ other 6 plots were triggered and so on.
 |f |Final target devices separated with ; |-f C |
 |d1 |Delay 1 which corresponds with the Phase 1 time in seconds |-d1 12500 |
 |d2 |Delay 2 which corresponds with Plotting time in seconds |-d2 32000 |
-|c |Copytime is the time which is needed to copy 1 plot from temporary device to target device |-c 4000 (default: 4000) |
-|d |Distance is the time between each plot starts |-d 900 (default: 2000) |
-|a |Amount of parallel plots |-a 6 |
+|d |Distance is the time between each plot starts |-d 900 (default: 900) |
+|a |Amount of parallel plots per temporary drive (e.g. 2TB NVME 6-7 plots parallel) |-a 6 |
+|m |If you want to farm on a remote machine set to True |-m True (default: False) |
+|fk |Your farmer key from your main machine |-fk 870g238748a0193l27v482s93047283402d3914n728394 |
+|pk |Your pool key from your main machine |-pk 67573418920hd37482017348a0j2937489k2134701o2 |

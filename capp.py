@@ -22,6 +22,10 @@ parser.add_argument("-n", "--queued", type=str, required=False, help="Queued Plo
 parser.add_argument("-k", "--plot", type=str, required=False, help="Plot (default: 32)")
 parser.add_argument("-t", "--temporary", type=str, required=False, help="Temporary Devices")
 parser.add_argument("-f", "--target", type=str, required=False, help="Target Device ")
+parser.add_argument("-m", "--remote", type=bool, required=False, help="Remote Machine")
+parser.add_argument("-farmerkey", "--farmerkey", type=str, required=False, help="Farmer Key")
+parser.add_argument("-poolkey", "--poolkey", type=str, required=False, help="Pool Key")
+
 
 args = parser.parse_args()
 
@@ -48,12 +52,22 @@ def create_chia_threads():
         
         for i in range(0,int(args.amount)):
             command = 'chia plots create' \
-                        + ' -k ' + plot_size \
-                        + ' -n ' + queue_size \
-                        + ' -b ' + ram_size \
-                        + ' -r ' + cores \
-                        + ' -t ' + temp[i % len(temp)] +":\\" \
-                        + ' -d ' + tar[i % len(tar)] +":\\"
+                            + ' -k ' + plot_size \
+                            + ' -n ' + queue_size \
+                            + ' -b ' + ram_size \
+                            + ' -r ' + cores \
+                            + ' -t ' + temp[i % len(temp)] +":\\" \
+                            + ' -d ' + tar[i % len(tar)] +":\\"
+            if args.remote:
+                command = 'chia plots create' \
+                            + ' -f ' + args.farmerkey \
+                            + ' -p ' + args.poolkey \
+                            + ' -k ' + plot_size \
+                            + ' -n ' + queue_size \
+                            + ' -b ' + ram_size \
+                            + ' -r ' + cores \
+                            + ' -t ' + temp[i % len(temp)] +":\\" \
+                            + ' -d ' + tar[i % len(tar)] +":\\"
             thread = threading.Thread(target=os.system, args=(command,))
             thread_list.append(thread)
             logger.stdout_logger.debug('[CAPP] ['+str(datetime.now()) + ']' +' Plot ' + str(i) + ' created.')
@@ -83,7 +97,7 @@ def start_chia_automate_modus():
 
     if args.distance:
         distance = int(args.distance)
-        
+
     while True:
         while True:
             count += 1
