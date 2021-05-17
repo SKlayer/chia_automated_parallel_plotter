@@ -28,27 +28,18 @@ parser.add_argument("-pk", "--poolkey", type=str, required=False, help="Pool Key
 start = datetime.timestamp(datetime.now())
 threads = []
 args = parser.parse_args()
+distance = 900 if not args.distance else int(args.distance)
 
 def create_chia_threads():
     try:
-        plot_size = 32
-        ram_size = 3390
-        queue_size = 1
-        cores = 2
+        thread_list = []      
 
-        thread_list = []
-
-        if args.plot:
-            plot_size = args.plot
-        if args.ram:
-            ram_size = args.ram
-        if args.queued:
-            queue_size = args.queued
-        if args.cores:
-            cores = args.cores
-
+        plot_size = 32 if not args.plot else args.plot
+        ram_size = 3390 if not args.ram else args.ram
+        queue_size = 1 if not args.queued else args.queued
+        cores = 2 if not args.cores else args.cores
         temp = args.temporary.split(";")
-        tar = args.target.split(";")
+        target = args.target.split(";")
         
         for i in range(0,int(args.amount)):
             command = 'chia plots create' \
@@ -57,9 +48,7 @@ def create_chia_threads():
                             + ' -b ' + str(ram_size) \
                             + ' -r ' + str(cores) \
                             + ' -t ' + temp[i % len(temp)] \
-                            + ' -d ' + tar[i % len(tar)] 
-            if args.remote:
-                command = 'chia plots create' \
+                            + ' -d ' + target[i % len(target)] if not args.remote else  'chia plots create' \
                             + ' -f ' + args.farmerkey \
                             + ' -p ' + args.poolkey \
                             + ' -k ' + str(plot_size) \
@@ -67,7 +56,7 @@ def create_chia_threads():
                             + ' -b ' + str(ram_size) \
                             + ' -r ' + str(cores) \
                             + ' -t ' + temp[i % len(temp)] \
-                            + ' -d ' + tar[i % len(tar)] 
+                            + ' -d ' + target[i % len(target)] 
             thread = threading.Thread(target=os.system, args=(command,))
             thread_list.append(thread)
             logger.stdout_logger.debug('[CAPP] ['+str(datetime.now()) + ']' +' Plot ' + str(i) + ' created.')
@@ -76,7 +65,7 @@ def create_chia_threads():
         logger.stdout_logger.error('[CAPP] ['+str(datetime.now()) + ']' +' Failed.')
         print(traceback.format_exc())
 
-def schedule_chia_threads(distance):
+def schedule_chia_threads():
 
     thread_list = create_chia_threads()
     
@@ -89,32 +78,23 @@ def schedule_chia_threads(distance):
                 thread_list[ind].start()
                 time.sleep(distance)
             if ind == 0:
-                set_start()
+                start = datetime.timestamp(datetime.now())
         threads.pop(0)
         threads.append(thread_list)
     else:
-        set_start()
+        start = datetime.timestamp(datetime.now())
         for thread in thread_list:
             thread.start()
             time.sleep(distance)
         threads.append(thread_list)
 
-def set_start():
-    start = datetime.timestamp(datetime.now())
-
-def start_chia_automate_modus():  
-    
+def start_chia_automate_routine():  
     count = 0
-    distance = 900
-
-    if args.distance:
-        distance = int(args.distance)
-
     while True:
         
         while True:
             count += 1
-            schedule_chia_threads(distance)
+            schedule_chia_threads()
             
             if count == len(args.temporary.split(";")):
                 break
@@ -125,4 +105,4 @@ def start_chia_automate_modus():
         count = 0
 
 if __name__ == '__main__':
-    start_chia_automate_modus()
+    start_chia_automate_routine()
