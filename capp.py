@@ -75,10 +75,10 @@ def schedule_chia_threads():
             while thread.isAlive():
                 time.sleep(5)
             if not thread.isAlive():
+                if ind == 0:
+                    start = datetime.timestamp(datetime.now())
                 thread_list[ind].start()
                 time.sleep(distance)
-            if ind == 0:
-                start = datetime.timestamp(datetime.now())
         threads.pop(0)
         threads.append(thread_list)
     else:
