@@ -75,17 +75,35 @@ def create_chia_threads():
         logger.stdout_logger.error('[CAPP] ['+str(datetime.now()) + ']' +' Failed.')
         print(traceback.format_exc())
 
-def start_chia_threads(distance):
+def start_chia_threads(distance, threads):
+
     thread_list = create_chia_threads()
-    for thread in thread_list:
-        thread.start()
-        time.sleep(distance)
-    return thread_list
+
+    if len(threads) > 0:
+        for ind, thread in enumerate(threads[0]):
+            while thread.isAlive():
+                time.sleep(5)
+            if not thread.isAlive():
+                thread_list[ind].start()
+                time.sleep(distance)
+        threads.pop(0)
+        threads.append(thread_list)
+    else:
+        for thread in thread_list:
+            thread.start()
+            time.sleep(distance)
+        threads.append(thread_list)
+    return threads
 
 def check_aliveness(threads):
     for thread in threads:
         while thread.isAlive():
             time.sleep(120)
+        if not thread.isAlive():
+            break
+
+def join_threads(threads):
+    for thread in threads:
         thread.join()
 
 def start_chia_automate_modus():
@@ -98,9 +116,10 @@ def start_chia_automate_modus():
         distance = int(args.distance)
 
     while True:
+        
         while True:
             count += 1
-            threads.append(start_chia_threads(distance))
+            threads = start_chia_threads(distance, threads)
             
             if count == len(args.temporary.split(";")):
                 break
@@ -108,13 +127,11 @@ def start_chia_automate_modus():
             time.sleep(int(args.delay1) - (len(threads[0]) * distance))
 
             if count == 1 and len(threads) > 1:
-                check_aliveness(threads[0])
-                threads.pop(0)
+                join_threads(threads[0])
 
         time.sleep(int(args.delay2) - (datetime.timestamp(datetime.now()) - start))
 
-        check_aliveness(threads[0])
-        threads.pop(0)
+        join_threads(threads[0])
 
         start = datetime.timestamp(datetime.now())
         count = 0
