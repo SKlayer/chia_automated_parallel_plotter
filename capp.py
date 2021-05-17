@@ -25,7 +25,8 @@ parser.add_argument("-m", "--remote", type=bool, required=False, help="Remote Ma
 parser.add_argument("-fk", "--farmerkey", type=str, required=False, help="Farmer Key")
 parser.add_argument("-pk", "--poolkey", type=str, required=False, help="Pool Key")
 
-
+start = datetime.timestamp(datetime.now())
+threads = []
 args = parser.parse_args()
 
 def create_chia_threads():
@@ -75,40 +76,34 @@ def create_chia_threads():
         logger.stdout_logger.error('[CAPP] ['+str(datetime.now()) + ']' +' Failed.')
         print(traceback.format_exc())
 
-def start_chia_threads(distance, threads):
+def schedule_chia_threads(distance):
 
     thread_list = create_chia_threads()
-
-    if len(threads) > 0:
+    
+    if len(threads) > 1:
         for ind, thread in enumerate(threads[0]):
+            thread.join()
             while thread.isAlive():
                 time.sleep(5)
             if not thread.isAlive():
                 thread_list[ind].start()
                 time.sleep(distance)
+            if ind == 0:
+                set_start()
         threads.pop(0)
         threads.append(thread_list)
     else:
+        set_start()
         for thread in thread_list:
             thread.start()
             time.sleep(distance)
         threads.append(thread_list)
-    return threads
 
-def check_aliveness(threads):
-    for thread in threads:
-        while thread.isAlive():
-            time.sleep(120)
-        if not thread.isAlive():
-            break
-
-def join_threads(threads):
-    for thread in threads:
-        thread.join()
-
-def start_chia_automate_modus():
+def set_start():
     start = datetime.timestamp(datetime.now())
-    threads = []
+
+def start_chia_automate_modus():  
+    
     count = 0
     distance = 900
 
@@ -119,21 +114,14 @@ def start_chia_automate_modus():
         
         while True:
             count += 1
-            threads = start_chia_threads(distance, threads)
+            schedule_chia_threads(distance)
             
             if count == len(args.temporary.split(";")):
                 break
 
             time.sleep(int(args.delay1) - (len(threads[0]) * distance))
 
-            if count == 1 and len(threads) > 1:
-                join_threads(threads[0])
-
         time.sleep(int(args.delay2) - (datetime.timestamp(datetime.now()) - start))
-
-        join_threads(threads[0])
-
-        start = datetime.timestamp(datetime.now())
         count = 0
 
 if __name__ == '__main__':
